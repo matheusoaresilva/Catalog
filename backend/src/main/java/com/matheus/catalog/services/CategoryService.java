@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matheus.catalog.dto.CategoryDTO;
 import com.matheus.catalog.entities.Category;
 import com.matheus.catalog.repositories.CategoryRepository;
+import com.matheus.catalog.services.exceptions.EntityNotFoundException;
 
 @Service
 public class CategoryService {
@@ -27,7 +28,7 @@ public class CategoryService {
 	@Transactional(readOnly = true)
 	public CategoryDTO findById(Long id) {
 		Optional<Category> obj = repository.findById(id);
-		Category entity = obj.get();
+		Category entity = obj.orElseThrow(() -> new EntityNotFoundException("Entity not found!"));
 		return new CategoryDTO(entity);
 		
 	}
