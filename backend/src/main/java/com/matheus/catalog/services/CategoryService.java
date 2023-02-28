@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +58,14 @@ public class CategoryService {
 	}
 
 	public void delete(Long id) {
-		repository.deleteById(id);
+		try {
+			repository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException("Id not found: " + id);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 	}
 }
