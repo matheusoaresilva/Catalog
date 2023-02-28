@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matheus.catalog.dto.CategoryDTO;
 import com.matheus.catalog.entities.Category;
 import com.matheus.catalog.repositories.CategoryRepository;
+import com.matheus.catalog.services.exceptions.DatabaseException;
 import com.matheus.catalog.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -63,8 +65,8 @@ public class CategoryService {
 		} catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException("Id not found: " + id);
 		}
-		catch (Exception e) {
-			// TODO: handle exception
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Integrity violation");
 		}
 		
 	}
