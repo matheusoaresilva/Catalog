@@ -12,10 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.matheus.catalog.dto.CategoryDTO;
 import com.matheus.catalog.dto.ProductDTO;
+import com.matheus.catalog.entities.Category;
 import com.matheus.catalog.entities.Product;
-import com.matheus.catalog.entities.Product;
-import com.matheus.catalog.repositories.ProductRepository;
+import com.matheus.catalog.repositories.CategoryRepository;
 import com.matheus.catalog.repositories.ProductRepository;
 import com.matheus.catalog.services.exceptions.DatabaseException;
 import com.matheus.catalog.services.exceptions.ResourceNotFoundException;
@@ -25,6 +26,9 @@ public class ProductService {
 
 	@Autowired
 	ProductRepository repository;
+	
+	@Autowired
+	CategoryRepository categoryRepository;
 
 	@Transactional(readOnly = true)
 	public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {
@@ -81,5 +85,11 @@ public class ProductService {
 		entity.setImgUrl(dto.getImgUrl());
 		entity.setPrice(dto.getPrice());
 		
+		entity.getCategories().clear();
+		
+		for (CategoryDTO catDTO : dto.getCategories()) {
+			Category category = categoryRepository.getOne(dto.getId());
+			entity.getCategories().add(category);
+		}
 	}
-}
+	}
