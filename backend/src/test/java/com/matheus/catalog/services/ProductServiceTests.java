@@ -1,11 +1,14 @@
 package com.matheus.catalog.services;
 
 import com.matheus.catalog.dto.ProductDTO;
+import com.matheus.catalog.entities.Category;
 import com.matheus.catalog.entities.Product;
+import com.matheus.catalog.repositories.CategoryRepository;
 import com.matheus.catalog.repositories.ProductRepository;
 import com.matheus.catalog.services.exceptions.DatabaseException;
 import com.matheus.catalog.services.exceptions.ResourceNotFoundException;
 import com.matheus.catalog.tests.Factory;
+import org.hibernate.action.internal.EntityActionVetoException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,11 +38,15 @@ public class ProductServiceTests {
     @Mock
     ProductRepository repository;
 
+    @Mock
+    CategoryRepository categoryRepository;
+
     Long existingId;
     Long nonExistingId;
     Long dependentId;
     PageImpl<Product> page;
     Product product;
+    Category category;
 
 
     @BeforeEach
@@ -48,8 +55,16 @@ public class ProductServiceTests {
         nonExistingId = 1000L;
         dependentId = 4L;
         product = Factory.createProduct();
+        category = Factory.createCategory();
         page = new PageImpl<>(List.of(product));
 
+        Mockito.when(categoryRepository.getOne(existingId)).thenReturn(category);
+
+        Mockito.when(categoryRepository.getOne(nonExistingId)).thenThrow(EntityActionVetoException.class);
+
+        Mockito.when(repository.getOne(existingId)).thenReturn(product);
+
+        Mockito.when(repository.getOne(nonExistingId)).thenThrow(EntityActionVetoException.class);
 
         Mockito.when(repository.findAll((Pageable)ArgumentMatchers.any())).thenReturn(page);
 
