@@ -20,7 +20,13 @@ public class ProductRepositoryTests {
 
     private Long existingId;
     private Long nonExistingId;
-
+    private Long countTotalProducts;
+    @BeforeEach
+    void setUp() throws Exception{
+        existingId = 1L;
+        nonExistingId = 1000L;
+        countTotalProducts = 25L;
+    }
     @Test
     public void saveShouldPersistWithAutoincrementWhenIdIsNull(){
         Product product = Factory.createProduct();
@@ -29,13 +35,10 @@ public class ProductRepositoryTests {
         product = repository.save(product);
 
         Assertions.assertNotNull(product.getId());
+        Assertions.assertEquals(countTotalProducts +1, product.getId());
     }
 
-    @BeforeEach
-    void setUp() throws Exception{
-        existingId = 1L;
-        nonExistingId = 1000L;
-    }
+
 
     @Test
     public void deleteShouldDeleteObjectWhenIdExists(){
