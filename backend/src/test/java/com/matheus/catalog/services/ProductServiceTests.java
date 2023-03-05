@@ -52,6 +52,8 @@ public class ProductServiceTests {
 
         Mockito.when(repository.findById(existingId)).thenReturn(Optional.of(product));
 
+        Mockito.when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
+
         Mockito.doNothing().when(repository).deleteById(existingId);
 
         Mockito.doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
