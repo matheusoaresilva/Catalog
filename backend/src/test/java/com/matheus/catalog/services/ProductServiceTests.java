@@ -68,6 +68,14 @@ public class ProductServiceTests {
     }
 
     @Test
+    public void findByIdShouldThrowResourceNotFoundExceptionWhenIdDoesNotExists(){
+
+        Assertions.assertThrows(ResourceNotFoundException.class,() ->{
+            service.findById(nonExistingId);
+        });
+
+    }
+    @Test
     public void findByIdShouldReturnProductDtoWhenIdExists(){
         ProductDTO result = service.findById(existingId);
 
