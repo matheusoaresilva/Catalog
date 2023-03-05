@@ -1,6 +1,7 @@
 package com.matheus.catalog.repositories;
 
 import com.matheus.catalog.entities.Product;
+import com.matheus.catalog.tests.Factory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,16 @@ public class ProductRepositoryTests {
 
     private Long existingId;
     private Long nonExistingId;
+
+    @Test
+    public void saveShouldPersistWithAutoincrementWhenIdIsNull(){
+        Product product = Factory.createProduct();
+        product.setId(null);
+
+        product = repository.save(product);
+
+        Assertions.assertNotNull(product.getId());
+    }
 
     @BeforeEach
     void setUp() throws Exception{
