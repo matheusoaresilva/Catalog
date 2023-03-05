@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -45,6 +46,8 @@ public class ProductServiceTests {
         page = new PageImpl<>(List.of(product));
 
         Mockito.when(repository.findAll((Pageable)ArgumentMatchers.any())).thenReturn(page);
+
+        Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(product);
 
         Mockito.doNothing().when(repository).deleteById(existingId);
 
