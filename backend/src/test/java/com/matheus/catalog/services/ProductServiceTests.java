@@ -26,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +48,7 @@ public class ProductServiceTests {
     PageImpl<Product> page;
     Product product;
     Category category;
+    ProductDTO productDTO;
 
 
     @BeforeEach
@@ -57,14 +59,15 @@ public class ProductServiceTests {
         product = Factory.createProduct();
         category = Factory.createCategory();
         page = new PageImpl<>(List.of(product));
+        productDTO = Factory.createProductDTO();
 
         Mockito.when(categoryRepository.getOne(existingId)).thenReturn(category);
 
-        Mockito.when(categoryRepository.getOne(nonExistingId)).thenThrow(EntityActionVetoException.class);
+        Mockito.when(categoryRepository.getOne(nonExistingId)).thenThrow(EntityNotFoundException.class);
 
         Mockito.when(repository.getOne(existingId)).thenReturn(product);
 
-        Mockito.when(repository.getOne(nonExistingId)).thenThrow(EntityActionVetoException.class);
+        Mockito.when(repository.getOne(nonExistingId)).thenThrow(EntityNotFoundException.class);
 
         Mockito.when(repository.findAll((Pageable)ArgumentMatchers.any())).thenReturn(page);
 
@@ -83,9 +86,15 @@ public class ProductServiceTests {
     }
 
     @Test
-    public void updateShouldReturnProductDtoWhenIdExists(){
+    public void updateShouldThrowResourceNotFoundExceptionWhenIdDoesNotExists(){
+        Assertions.assertThrows(ResourceNotFoundException.class,() ->{
+            service.update(nonExistingId, productDTO);
+        });
+    }
 
-        ProductDTO productDTO = Factory.createProductDTO();
+
+    @Test
+    public void updateShouldReturnProductDtoWhenIdExists(){
 
         ProductDTO result = service.update(existingId, productDTO);
 
