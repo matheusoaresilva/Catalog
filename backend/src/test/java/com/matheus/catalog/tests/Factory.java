@@ -1,5 +1,6 @@
 package com.matheus.catalog.tests;
 
+import com.matheus.catalog.dto.ProductDTO;
 import com.matheus.catalog.entities.Category;
 import com.matheus.catalog.entities.Product;
 
@@ -12,5 +13,10 @@ public class Factory {
                 "https://img.com/img.png", Instant.parse("2020-04-20T03:00:00Z"));
         product.getCategories().add(new Category(2L, "Eletronics"));
         return product;
+    }
+
+    public static ProductDTO createProductDTO(){
+        Product product = createProduct();
+        return new ProductDTO(product, product.getCategories());
     }
 }
