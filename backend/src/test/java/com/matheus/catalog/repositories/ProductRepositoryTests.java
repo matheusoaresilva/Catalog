@@ -39,7 +39,6 @@ public class ProductRepositoryTests {
     }
 
 
-
     @Test
     public void deleteShouldDeleteObjectWhenIdExists(){
 
@@ -58,4 +57,13 @@ public class ProductRepositoryTests {
             Optional<Product> result = repository.findById(nonExistingId);
         });
     }
+
+    @Test
+    public void findByIdShouldReturnOptionalDontEmptyWhenIdExists(){
+
+        Optional<Product> result = repository.findById(existingId);
+        Assertions.assertFalse(result.isEmpty());
+    }
+
+
 }
