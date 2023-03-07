@@ -13,11 +13,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,8 +63,15 @@ public class ProductResourceTests {
     }
 
     @Test
-    public void findByIdShouldReturnProductWhenIdExists(){
+    public void findByIdShouldReturnProductWhenIdExists() throws Exception {
+        ResultActions result =
+                mockMvc.perform(get("/products/{id}", existingId)
+                        .accept(MediaType.APPLICATION_JSON));
 
+                result.andExpect(status().isOk());
+                result.andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
+                result.andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
+                result.andExpect(MockMvcResultMatchers.jsonPath("$.description").exists());
     }
 }
 
