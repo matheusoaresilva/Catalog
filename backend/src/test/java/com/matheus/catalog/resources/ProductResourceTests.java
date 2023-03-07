@@ -73,5 +73,14 @@ public class ProductResourceTests {
                 result.andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
                 result.andExpect(MockMvcResultMatchers.jsonPath("$.description").exists());
     }
+
+    @Test
+    public void findByIdShouldReturnProductWhenIdDoesNotExist() throws Exception {
+        ResultActions result =
+                mockMvc.perform(get("/products/{id}", nonExistingId)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isNotFound());
+    }
 }
 
