@@ -2,6 +2,7 @@ package com.matheus.catalog.resources;
 
 import com.matheus.catalog.dto.ProductDTO;
 import com.matheus.catalog.services.ProductService;
+import com.matheus.catalog.services.exceptions.ResourceNotFoundException;
 import com.matheus.catalog.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,15 +30,25 @@ public class ProductResourceTests {
     @MockBean
     ProductService service;
 
+    Long existingId;
+    Long nonExistingId;
+
     ProductDTO productDTO;
     PageImpl<ProductDTO> page;
 
     @BeforeEach
     void setUp() throws Exception {
+
+        existingId = 1L;
+        nonExistingId = 2L;
         productDTO = Factory.createProductDTO();
         page = new PageImpl<>(List.of(productDTO));
 
         when(service.findAllPaged(any())).thenReturn(page);
+
+        when(service.findById(existingId)).thenReturn(productDTO);
+
+        when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
     }
 
     @Test
