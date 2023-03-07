@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -58,7 +58,12 @@ public class ProductResourceTests {
         when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
 
         when(service.update(eq(existingId), any())).thenReturn(productDTO);
+
         when(service.update(eq(nonExistingId), any())).thenThrow(ResourceNotFoundException.class);
+
+        doNothing().when(service).delete(existingId);
+
+        doThrow(ResourceNotFoundException.class).when(service).delete(nonExistingId);
     }
 
     @Test
