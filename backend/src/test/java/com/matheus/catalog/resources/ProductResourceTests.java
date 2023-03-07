@@ -40,6 +40,8 @@ public class ProductResourceTests {
     Long existingId;
     Long nonExistingId;
 
+    Long dependentId;
+
     ProductDTO productDTO;
     PageImpl<ProductDTO> page;
 
@@ -48,6 +50,7 @@ public class ProductResourceTests {
 
         existingId = 1L;
         nonExistingId = 2L;
+        dependentId = 3L;
         productDTO = Factory.createProductDTO();
         page = new PageImpl<>(List.of(productDTO));
 
