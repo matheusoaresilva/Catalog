@@ -3,6 +3,7 @@ package com.matheus.catalog.resources;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matheus.catalog.dto.ProductDTO;
 import com.matheus.catalog.services.ProductService;
+import com.matheus.catalog.services.exceptions.DatabaseException;
 import com.matheus.catalog.services.exceptions.ResourceNotFoundException;
 import com.matheus.catalog.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,6 +68,8 @@ public class ProductResourceTests {
         doNothing().when(service).delete(existingId);
 
         doThrow(ResourceNotFoundException.class).when(service).delete(nonExistingId);
+
+        doThrow(DatabaseException.class).when(service).delete(dependentId);
     }
 
     @Test
