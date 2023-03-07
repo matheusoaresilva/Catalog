@@ -59,5 +59,10 @@ public class ProductResourceTests {
 
                 result.andExpect(status().isOk());
     }
+
+    @Test
+    public void findByIdShouldReturnProductWhenIdExists(){
+
+    }
 }
 
