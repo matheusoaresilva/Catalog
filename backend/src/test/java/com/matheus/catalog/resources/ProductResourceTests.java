@@ -78,6 +78,11 @@ public class ProductResourceTests {
     }
 
     @Test
+    public void updateShouldReturnProductDTOWhenIdDoesNotExists() throws Exception{
+
+    }
+
+    @Test
     public void findAllShouldReturnPage() throws Exception{
         ResultActions result =
                 mockMvc.perform(get("/products")
