@@ -1,5 +1,6 @@
 package com.matheus.catalog.resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matheus.catalog.dto.ProductDTO;
 import com.matheus.catalog.services.ProductService;
 import com.matheus.catalog.services.exceptions.ResourceNotFoundException;
@@ -19,8 +20,8 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductResource.class)
@@ -31,6 +32,9 @@ public class ProductResourceTests {
 
     @MockBean
     ProductService service;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     Long existingId;
     Long nonExistingId;
@@ -57,8 +61,19 @@ public class ProductResourceTests {
     }
 
     @Test
-    public void updateShouldReturnProductDTOWhenIdExists(){
+    public void updateShouldReturnProductDTOWhenIdExists() throws Exception{
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
 
+        ResultActions result =
+                mockMvc.perform(put("/products/{id}", existingId)
+                                .content(jsonBody)
+                                .contentType((MediaType.APPLICATION_JSON))
+                                .accept(MediaType.APPLICATION_JSON));
+
+                result.andExpect(status().isOk());
+                result.andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
+                result.andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
+                result.andExpect(MockMvcResultMatchers.jsonPath("$.description").exists());
     }
 
     @Test
