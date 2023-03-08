@@ -73,6 +73,15 @@ public class ProductResourceTests {
         doThrow(DatabaseException.class).when(service).delete(dependentId);
     }
 
+    @Test
+    public void deleteShouldReturnNotFoundWhenIdDoesNotExist() throws Exception{
+
+        ResultActions result =
+                mockMvc.perform(delete("/products/{id}", nonExistingId)
+                        .contentType((MediaType.APPLICATION_JSON)));
+
+        result.andExpect(status().isNotFound());
+    }
 
     @Test
     public void deleteShouldReturnNoContentWhenIdExists() throws Exception{
