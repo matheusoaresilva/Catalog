@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -68,6 +69,17 @@ public class ProductServiceIT {
         Page<ProductDTO> result = service.findAllPaged(pageRequest);
 
         Assertions.assertTrue(result.isEmpty());
+    }
+    @Test
+    public void findAllPagedShouldReturnSortedPageWhenSortById(){
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("name"));
+
+        Page<ProductDTO> result = service.findAllPaged(pageRequest);
+
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals("Macbook Pro", result.getContent().get(0).getName());
+        Assertions.assertEquals("PC Gamer", result.getContent().get(1).getName());
+        Assertions.assertEquals("PC Gamer Alfa", result.getContent().get(2).getName());
     }
 
 }
