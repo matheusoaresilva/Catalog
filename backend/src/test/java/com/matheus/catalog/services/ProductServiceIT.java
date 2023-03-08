@@ -1,6 +1,7 @@
 package com.matheus.catalog.services;
 
 import com.matheus.catalog.repositories.ProductRepository;
+import com.matheus.catalog.services.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,15 @@ public class ProductServiceIT {
         service.delete(existingId);
 
         Assertions.assertEquals(countTotalProducts - 1, repository.count());
+    }
+
+    @Test
+    public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist(){
+
+
+        Assertions.assertThrows(ResourceNotFoundException.class, ()->{
+            service.delete(nonExistingId);
+        });
     }
 
 }
