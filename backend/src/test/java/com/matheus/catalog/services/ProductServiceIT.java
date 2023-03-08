@@ -20,7 +20,9 @@ public class ProductServiceIT {
 
     @BeforeEach
     void setUp() throws Exception{
-
+        existingId = 1L;
+        nonExistingId = 1000L;
+        countTotalProducts = 25L;
     }
 
 }
