@@ -22,8 +22,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductResource.class)
@@ -55,6 +54,8 @@ public class ProductResourceTests {
         productDTO = Factory.createProductDTO();
         page = new PageImpl<>(List.of(productDTO));
 
+        when(service.insert(any())).thenReturn(productDTO);
+
         when(service.findAllPaged(any())).thenReturn(page);
 
         when(service.findById(existingId)).thenReturn(productDTO);
@@ -70,6 +71,22 @@ public class ProductResourceTests {
         doThrow(ResourceNotFoundException.class).when(service).delete(nonExistingId);
 
         doThrow(DatabaseException.class).when(service).delete(dependentId);
+    }
+
+    @Test
+    public void insertShouldReturnProductDTO() throws Exception{
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
+
+        ResultActions result =
+                mockMvc.perform(post("/products")
+                        .content(jsonBody)
+                        .contentType((MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isCreated());
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.description").exists());
     }
 
     @Test
