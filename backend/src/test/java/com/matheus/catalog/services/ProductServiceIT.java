@@ -1,7 +1,9 @@
 package com.matheus.catalog.services;
 
 import com.matheus.catalog.repositories.ProductRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -23,6 +25,13 @@ public class ProductServiceIT {
         existingId = 1L;
         nonExistingId = 1000L;
         countTotalProducts = 25L;
+    }
+
+    @Test
+    public void deleteShouldDeleteResourceWhenIdExists(){
+        service.delete(existingId);
+
+        Assertions.assertEquals(countTotalProducts - 1, repository.count());
     }
 
 }
