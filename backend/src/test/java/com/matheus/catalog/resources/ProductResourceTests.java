@@ -73,6 +73,17 @@ public class ProductResourceTests {
         doThrow(DatabaseException.class).when(service).delete(dependentId);
     }
 
+
+    @Test
+    public void deleteShouldReturnNoContentWhenIdExists() throws Exception{
+
+        ResultActions result =
+                mockMvc.perform(delete("/products/{id}", existingId)
+                        .contentType((MediaType.APPLICATION_JSON)));
+
+        result.andExpect(status().isNoContent());
+    }
+
     @Test
     public void insertShouldReturnProductDTO() throws Exception{
         String jsonBody = objectMapper.writeValueAsString(productDTO);
