@@ -1,6 +1,7 @@
 package com.matheus.catalog.services;
 
 import com.matheus.catalog.repositories.ProductRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -16,5 +17,10 @@ public class ProductServiceIT {
     Long existingId;
     Long nonExistingId;
     Long countTotalProducts;
+
+    @BeforeEach
+    void setUp() throws Exception{
+
+    }
 
 }
