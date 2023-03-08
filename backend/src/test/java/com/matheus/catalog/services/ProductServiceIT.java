@@ -61,4 +61,13 @@ public class ProductServiceIT {
         Assertions.assertEquals(countTotalProducts, result.getTotalElements());
     }
 
+    @Test
+    public void findAllPagedShouldReturnEmptyPageWhenPageDoesNotExist(){
+        PageRequest pageRequest = PageRequest.of(50, 10);
+
+        Page<ProductDTO> result = service.findAllPaged(pageRequest);
+
+        Assertions.assertTrue(result.isEmpty());
+    }
+
 }
