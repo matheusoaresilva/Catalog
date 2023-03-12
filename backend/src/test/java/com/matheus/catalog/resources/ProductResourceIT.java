@@ -1,5 +1,8 @@
 package com.matheus.catalog.resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.matheus.catalog.dto.ProductDTO;
+import com.matheus.catalog.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.http.RequestEntity.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @SpringBootTest
@@ -21,6 +25,9 @@ public class ProductResourceIT {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     Long existingId;
     Long nonExistingId;
@@ -47,5 +54,26 @@ public class ProductResourceIT {
         result.andExpect(jsonPath("$.content[1].name").value("PC Gamer"));
         result.andExpect(jsonPath("$.content[2].name").value("PC Gamer Alfa"));
 
+    }
+
+    @Test
+    public void updateShouldReturnProductDTOWhenIdExists() throws Exception{
+
+        ProductDTO productDTO = Factory.createProductDTO();
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
+
+        String expectedName = productDTO.getName();
+        String expectedDescription = productDTO.getDescription();
+
+        ResultActions result =
+                mockMvc.perform(put("/products/{id}", existingId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk());
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(existingId));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.name").value(expectedName));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.description").value(expectedDescription));
     }
 }
