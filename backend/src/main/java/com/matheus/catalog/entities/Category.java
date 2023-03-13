@@ -2,16 +2,11 @@ package com.matheus.catalog.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "tb_category")
@@ -29,7 +24,9 @@ public class Category implements Serializable{
 	
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
-	
+
+	@ManyToMany(mappedBy = "categories")
+	private Set<Product> products = new HashSet<>();
 	
 	public Category() {
 		
@@ -76,6 +73,12 @@ public class Category implements Serializable{
 	public void preUpdate() {
 		updatedAt = Instant.now();
 	}
+
+	public Set<Product> getProducts() {
+		return products;
+	}
+
+
 
 	@Override
 	public int hashCode() {
